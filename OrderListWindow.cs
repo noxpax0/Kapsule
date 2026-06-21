@@ -160,14 +160,15 @@ public sealed class OrderListWindow : Window, IAutoSaveWindow
             return;
         }
 
-        AddItem(new OrderLineItem { ProductName = custom.ToUpperInvariant(), IsCustom = true }, QuantityDialog.Ask(this));
+        var customName = custom.ToUpperInvariant();
+        AddItem(new OrderLineItem { ProductName = customName, IsCustom = true }, QuantityDialog.Ask(this, customName));
     }
 
     private void AddSelectedMatch()
     {
         if (SelectedProduct() is ProductReference product)
         {
-            var quantity = QuantityDialog.Ask(this);
+            var quantity = QuantityDialog.Ask(this, product.Name);
             if (quantity <= 0)
             {
                 return;
