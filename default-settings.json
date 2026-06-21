@@ -1,0 +1,107 @@
+{
+  "MenuItems": [
+    {
+      "Label": "Doctor Contacts",
+      "ActionKey": "print_contact_card",
+      "AccentHex": "#26D9FF"
+    },
+    {
+      "Label": "POYC",
+      "ActionKey": "print_poyc",
+      "AccentHex": "#FF9F2F"
+    },
+    {
+      "Label": "DDA",
+      "ActionKey": "print_dda",
+      "AccentHex": "#FF6B35"
+    },
+    {
+      "Label": "Handover",
+      "ActionKey": "open_handover",
+      "AccentHex": "#3AF5C6"
+    },
+    {
+      "Label": "Custom TxT",
+      "ActionKey": "open_custom_text",
+      "AccentHex": "#B68CFF"
+    },
+    {
+      "Label": "Order List",
+      "ActionKey": "open_order_list",
+      "AccentHex": "#7CE38B"
+    },
+    {
+      "Label": "Settings",
+      "ActionKey": "open_settings",
+      "AccentHex": "#CFF6FF"
+    }
+  ],
+  "Presets": {
+    "SuperuserMode": false,
+    "LogoPath": "C:\\Users\\noelp\\Desktop\\DoctorLogo.png",
+    "QrWebsite": "https://drantonbriffa.setmore.com/",
+    "QrCaption": "\uD83D\uDD17 drantonbriffa.setmore.com",
+    "Email": "drantonbriffa@gmail.com",
+    "Mobile": "79429294",
+    "Location": "Honest Pharmacy Stella Maris\r\n34, Milner Street Sliema",
+    "HandoverNotes": "",
+    "PoycText": "\uD83D\uDD17 Latest info: https://poyc.gov.mt/en/contact/\r\n\r\nPOYC, St Luke\u0027s Hospital Campus, \r\nPieta, PTA 1012\r\n\r\n\uD83D\uDCE7 info.poyc@gov.mt\r\n\r\n\uD83D\uDCDE 22481800 [Malta Branch]\r\n\uD83D\uDCDE 21561606 [Gozo Branch]\r\n\r\nOPEN Monday to Friday \r\n\u23F3 8.00am to 13.00hrs\u200B\r\n\r\n\uD83D\uDD17 Latest info: https://poyc.gov.mt/en/contact/",
+    "DdaText": "\uD83C\uDD94 ________________________________\r\n\r\n\uD83D\uDC8A __________________   QTY _______\r\n\r\n\uD83D\uDC8A __________________   QTY _______\r\n\r\nRENEWAL :\r\n\r\nEUR  __________",
+    "CustomTextFilePath": "",
+    "CustomTextContent": "",
+    "OrderCsvPath": "C:\\Users\\noelp\\Documents\\Codex\\2026-06-20\\files-mentioned-by-the-user-fridge\\outputs\\TestsMockData\\PRODUCTS 060526 - PRODUCTS 060526.csv",
+    "OrderItems": []
+  },
+  "PrepChecklist": [
+    {
+      "Name": "Logo image",
+      "Needed": "Upload pharmacy/clinic logo used for tray icon and Doctor Contacts.",
+      "Done": false
+    },
+    {
+      "Name": "QR website",
+      "Needed": "Paste website URL for Doctor Contacts QR code.",
+      "Done": false
+    },
+    {
+      "Name": "Email",
+      "Needed": "Set public patient-facing email.",
+      "Done": false
+    },
+    {
+      "Name": "Mobile number",
+      "Needed": "Set public contact number.",
+      "Done": false
+    },
+    {
+      "Name": "Address",
+      "Needed": "Set multiline address, including skipped lines if needed.",
+      "Done": false
+    },
+    {
+      "Name": "POYC text",
+      "Needed": "Review POYC print text.",
+      "Done": false
+    },
+    {
+      "Name": "DDA text",
+      "Needed": "Review DDA justified print text.",
+      "Done": false
+    },
+    {
+      "Name": "Custom TxT/PDF",
+      "Needed": "Choose default custom text or PDF file.",
+      "Done": false
+    },
+    {
+      "Name": "Order CSV",
+      "Needed": "Choose product reference CSV with Product NAME, WHS, RRP, %.",
+      "Done": false
+    },
+    {
+      "Name": "Thermal test print",
+      "Needed": "Enable Superuser Mode and run a test print on the target printer.",
+      "Done": false
+    }
+  ]
+}

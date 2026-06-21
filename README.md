@@ -51,6 +51,8 @@ Settings are split into:
 - **Menu slices**: choose the preset/action, auto-rename the slice from the preset, adjust label, and choose a color from a swatch/RGB color picker.
 - **General Settings**: enable Superuser Mode, upload logo, website, email, mobile number, and multiline address.
 - **Preset Details**: POYC text, DDA text, Custom TxT/PDF file, and Order CSV file.
+- **Preparation Checklist**: tick off what needs changing before a new PC/site is ready.
+- **Install Defaults**: save the current setup as portable defaults, or reset software data back to those defaults.
 
 The address field supports skipped lines and multiline entry.
 
@@ -74,6 +76,22 @@ Settings are saved here:
 ```text
 %APPDATA%\FuturisticCtrlHud\settings.json
 ```
+
+Portable install defaults are saved beside the EXE:
+
+```text
+default-settings.json
+```
+
+When the app is first run on a new PC, it uses `default-settings.json` if that file is present. If the user later resets software data, the app restores from `default-settings.json` again.
+
+Recommended setup flow:
+
+1. Configure logo, website, email, address, POYC, DDA, Custom TxT/PDF, Order CSV, and menu slice colors.
+2. Tick the relevant preparation checklist items.
+3. Click **Save Current as Install Defaults**.
+4. Copy the whole published app folder to the new PC.
+5. On that PC, the app is ready pending minor local adjustments.
 
 ## Order List CSV
 
