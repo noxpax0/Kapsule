@@ -23,6 +23,7 @@ public static class HudConfig
         new("open_handover", "Handover", "Opens a simple handover note app and prints a dated bullet handover slip."),
         new("open_custom_text", "Custom TxT", "Loads or edits a TXT/PDF printout sized to the selected printer."),
         new("open_order_list", "Order List", "Tracks sold pharmacy items from a CSV reference sheet with quantity and profit margin."),
+        new("open_remedy_recipes", "Remedy Recipes", "Searches safe non-medical household recipe options with recipe-only guardrails."),
         new("open_settings", "Open Settings", "Opens the HUD settings window."),
     ];
 }

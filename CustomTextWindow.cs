@@ -168,10 +168,7 @@ public sealed class CustomTextWindow : Window, IAutoSaveWindow
             Padding = new Thickness(12),
             Background = Brushes.White
         };
-        text.Measure(new Size(dialog.PrintableAreaWidth, double.PositiveInfinity));
-        text.Arrange(new Rect(new Point(0, 0), text.DesiredSize));
-        text.UpdateLayout();
-        dialog.PrintVisual(text, "Custom TxT");
+        ReceiptPreviewWindow.PrintVisual(dialog, text, "Custom TxT");
     }
 
     private static Button Button(string label, string color) => new()

@@ -25,6 +25,9 @@ public sealed class SettingsWindow : Window, IAutoSaveWindow
     private readonly TextBox _ddaText = MultilineBox(70);
     private readonly TextBox _customTextFilePath = new();
     private readonly TextBox _orderCsvPath = new();
+    private readonly TextBox _remedyApiEndpoint = new();
+    private readonly TextBox _remedyApiModel = new();
+    private readonly TextBox _remedyApiKey = new();
     private readonly List<CheckBox> _prepChecks = [];
 
     public SettingsWindow(AppSettings settings)
@@ -86,9 +89,13 @@ public sealed class SettingsWindow : Window, IAutoSaveWindow
 
         content.Children.Add(Header("Preset Details"));
         content.Children.Add(Field("POYC text", _poycText));
-        content.Children.Add(Field("DDA text", _ddaText));
+        content.Children.Add(Field("DDA Details", _ddaText));
         content.Children.Add(BuildFileRow("Custom TxT/PDF", _customTextFilePath, "Text/PDF files|*.txt;*.pdf|Text files|*.txt|PDF files|*.pdf|All files|*.*"));
         content.Children.Add(BuildFileRow("Order CSV", _orderCsvPath, "CSV files|*.csv;*.txt|All files|*.*"));
+        content.Children.Add(Text("Remedy Recipes works offline by default. Optional API fields accept an OpenAI-compatible chat completions endpoint for smarter top-three recipe suggestions."));
+        content.Children.Add(Field("Recipe API endpoint", _remedyApiEndpoint));
+        content.Children.Add(Field("Recipe API model", _remedyApiModel));
+        content.Children.Add(Field("Recipe API key", _remedyApiKey));
 
         content.Children.Add(Header("Preparation Checklist"));
         content.Children.Add(Text("Use this as a setup list when installing on a new PC or checking what still needs changing."));
@@ -299,6 +306,9 @@ public sealed class SettingsWindow : Window, IAutoSaveWindow
         _ddaText.Text = _settings.Presets.DdaText;
         _customTextFilePath.Text = _settings.Presets.CustomTextFilePath;
         _orderCsvPath.Text = _settings.Presets.OrderCsvPath;
+        _remedyApiEndpoint.Text = _settings.Presets.RemedyApiEndpoint;
+        _remedyApiModel.Text = _settings.Presets.RemedyApiModel;
+        _remedyApiKey.Text = _settings.Presets.RemedyApiKey;
         for (var i = 0; i < _prepChecks.Count && i < _settings.PrepChecklist.Count; i++)
         {
             _prepChecks[i].IsChecked = _settings.PrepChecklist[i].Done;
@@ -345,6 +355,9 @@ public sealed class SettingsWindow : Window, IAutoSaveWindow
         _settings.Presets.DdaText = _ddaText.Text.Trim();
         _settings.Presets.CustomTextFilePath = _customTextFilePath.Text.Trim();
         _settings.Presets.OrderCsvPath = _orderCsvPath.Text.Trim();
+        _settings.Presets.RemedyApiEndpoint = _remedyApiEndpoint.Text.Trim();
+        _settings.Presets.RemedyApiModel = _remedyApiModel.Text.Trim();
+        _settings.Presets.RemedyApiKey = _remedyApiKey.Text.Trim();
         for (var i = 0; i < _prepChecks.Count && i < _settings.PrepChecklist.Count; i++)
         {
             _settings.PrepChecklist[i].Done = _prepChecks[i].IsChecked == true;

@@ -11,6 +11,8 @@ namespace FuturisticCtrlHud;
 
 public static class HudActions
 {
+    private const double StandardPrintPadding = 12;
+
     public static void Run(string actionKey)
     {
         var settings = AppSettings.Load();
@@ -65,7 +67,7 @@ public static class HudActions
                 break;
 
             case "print_dda":
-                PrintText("DDA", settings.Presets.DdaText, justify: true);
+                new DdaSlipWindow(settings).Show();
                 break;
 
             case "open_handover":
@@ -80,6 +82,10 @@ public static class HudActions
                 new OrderListWindow(settings).Show();
                 break;
 
+            case "open_remedy_recipes":
+                new RemedyRecipesWindow(settings).Show();
+                break;
+
             case "open_settings":
                 new SettingsWindow(settings).Show();
                 break;
@@ -92,7 +98,8 @@ public static class HudActions
 
     private static void PrintLogo(PresetSettings presets)
     {
-        if (string.IsNullOrWhiteSpace(presets.LogoPath) || !File.Exists(presets.LogoPath))
+        var logoPath = AppSettings.ResolveLogoPath(presets);
+        if (string.IsNullOrWhiteSpace(logoPath) || !File.Exists(logoPath))
         {
             MessageBox.Show("Choose a logo in Settings first.", "Futuristic HUD", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -100,11 +107,11 @@ public static class HudActions
 
         var image = new Image
         {
-            Source = new BitmapImage(new Uri(presets.LogoPath)),
+            Source = new BitmapImage(new Uri(logoPath)),
             Stretch = Stretch.Uniform,
-            MaxWidth = 520,
-            MaxHeight = 520,
-            Margin = new Thickness(40)
+            MaxWidth = 300,
+            MaxHeight = 300,
+            Margin = new Thickness(8)
         };
         PrintVisual("Logo", WrapForPrint(image));
     }
@@ -120,11 +127,11 @@ public static class HudActions
         {
             Text = string.IsNullOrWhiteSpace(text) ? $"No {title.ToLowerInvariant()} configured." : text,
             FontFamily = new FontFamily("Segoe UI"),
-            FontSize = justify ? 18 : 32,
+            FontSize = justify ? 14 : 18,
             FontWeight = FontWeights.SemiBold,
             TextWrapping = TextWrapping.Wrap,
             TextAlignment = justify ? TextAlignment.Justify : TextAlignment.Center,
-            Margin = new Thickness(42)
+            Margin = new Thickness(10)
         };
         PrintVisual(title, WrapForPrint(block));
     }
@@ -207,11 +214,12 @@ public static class HudActions
 
     private static UIElement CreateLogoForSlip(PresetSettings presets)
     {
-        if (!string.IsNullOrWhiteSpace(presets.LogoPath) && File.Exists(presets.LogoPath))
+        var logoPath = AppSettings.ResolveLogoPath(presets);
+        if (!string.IsNullOrWhiteSpace(logoPath) && File.Exists(logoPath))
         {
             return new Image
             {
-                Source = new BitmapImage(new Uri(presets.LogoPath)),
+                Source = new BitmapImage(new Uri(logoPath)),
                 Stretch = Stretch.Uniform,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
@@ -263,24 +271,24 @@ public static class HudActions
         var panel = new StackPanel
         {
             HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Thickness(35)
+            Margin = new Thickness(12)
         };
         panel.Children.Add(new Image
         {
-            Source = CreateQrBitmap(website, 14),
-            Width = 360,
-            Height = 360,
+            Source = CreateQrBitmap(website, 10),
+            Width = 220,
+            Height = 220,
             Stretch = Stretch.Uniform
         });
         panel.Children.Add(new TextBlock
         {
             Text = caption,
             FontFamily = new FontFamily("Segoe UI"),
-            FontSize = 20,
+            FontSize = 14,
             TextAlignment = TextAlignment.Center,
             TextWrapping = TextWrapping.Wrap,
-            Margin = new Thickness(0, 16, 0, 0),
-            MaxWidth = 480
+            Margin = new Thickness(0, 10, 0, 0),
+            MaxWidth = 300
         });
         return panel;
     }
@@ -298,7 +306,7 @@ public static class HudActions
     {
         Child = child,
         Background = Brushes.White,
-        Padding = new Thickness(28)
+        Padding = new Thickness(StandardPrintPadding)
     };
 
     private static void PrintVisual(string description, FrameworkElement visual)
@@ -309,9 +317,6 @@ public static class HudActions
             return;
         }
 
-        visual.Measure(new Size(dialog.PrintableAreaWidth, dialog.PrintableAreaHeight));
-        visual.Arrange(new Rect(new Point(0, 0), visual.DesiredSize));
-        visual.UpdateLayout();
-        dialog.PrintVisual(visual, description);
+        ReceiptPreviewWindow.PrintVisual(dialog, visual, description);
     }
 }

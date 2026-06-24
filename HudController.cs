@@ -10,10 +10,15 @@ public sealed class HudController : IDisposable
 {
     private readonly GlobalCtrlHook _hook = new();
     private TrayIconManager? _tray;
-    private AppSettings _settings = AppSettings.Load();
+    private AppSettings _settings;
     private HudWindow? _window;
     private SettingsWindow? _settingsWindow;
     private readonly DispatcherTimer _ctrlSpaceTimer = new() { Interval = TimeSpan.FromMilliseconds(HudConfig.DoubleTapMilliseconds) };
+
+    public HudController(AppSettings settings)
+    {
+        _settings = settings;
+    }
 
     public void Start()
     {
@@ -25,7 +30,7 @@ public sealed class HudController : IDisposable
             RestartApp();
         };
         _hook.Start();
-        _tray = new TrayIconManager(this);
+        _tray = new TrayIconManager(this, _settings);
         _tray.Show();
     }
 

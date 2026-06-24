@@ -11,12 +11,12 @@ public sealed class TrayIconManager : IDisposable
     private readonly HudController _controller;
     private readonly Forms.NotifyIcon _notifyIcon;
 
-    public TrayIconManager(HudController controller)
+    public TrayIconManager(HudController controller, AppSettings settings)
     {
         _controller = controller;
         _notifyIcon = new Forms.NotifyIcon
         {
-            Icon = LoadIcon(),
+            Icon = LoadIcon(settings.Presets),
             Text = "Futuristic Ctrl HUD",
             ContextMenuStrip = BuildMenu(),
             Visible = false
@@ -46,9 +46,9 @@ public sealed class TrayIconManager : IDisposable
         return menu;
     }
 
-    private static Icon LoadIcon()
+    private static Icon LoadIcon(PresetSettings presets)
     {
-        var logoPath = AppSettings.Load().Presets.LogoPath;
+        var logoPath = AppSettings.ResolveLogoPath(presets);
         if (!string.IsNullOrWhiteSpace(logoPath) && File.Exists(logoPath))
         {
             try

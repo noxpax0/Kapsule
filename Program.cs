@@ -38,17 +38,30 @@ public static class Program
 
     private static void RunApp(string[] args)
     {
+        var settings = AppSettings.Load();
         var app = new Application
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown
         };
+        UiStyles.Apply(app);
 
-        using var controller = new HudController();
+        if (Array.Exists(args, arg => arg.Equals("--test-dda-print-visual", StringComparison.OrdinalIgnoreCase)))
+        {
+            DdaSlipWindow.RunPrintVisualSelfTest();
+            return;
+        }
+
+        using var controller = new HudController(settings);
         controller.Start();
 
         if (Array.Exists(args, arg => arg.Equals("--show", StringComparison.OrdinalIgnoreCase) || arg.Equals("-Show", StringComparison.OrdinalIgnoreCase)))
         {
             app.Dispatcher.BeginInvoke(() => controller.ToggleHud());
+        }
+
+        if (Array.Exists(args, arg => arg.Equals("--open-dda", StringComparison.OrdinalIgnoreCase)))
+        {
+            app.Dispatcher.BeginInvoke(() => new DdaSlipWindow(settings).Show());
         }
 
         app.Run();

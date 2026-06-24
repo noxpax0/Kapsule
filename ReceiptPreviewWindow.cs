@@ -1,6 +1,8 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace FuturisticCtrlHud;
@@ -117,10 +119,143 @@ public sealed class ReceiptPreviewWindow : Window
 
     public static void PrintVisual(PrintDialog dialog, FrameworkElement visual, string description)
     {
-        visual.Measure(new Size(visual.Width > 0 ? visual.Width : dialog.PrintableAreaWidth, double.PositiveInfinity));
+        var width = Math.Max(1, Math.Min(visual.Width > 0 ? visual.Width : dialog.PrintableAreaWidth, dialog.PrintableAreaWidth));
+        var height = Math.Max(1, dialog.PrintableAreaHeight);
+        visual.Width = width;
+        visual.Measure(new Size(width, double.PositiveInfinity));
         visual.Arrange(new Rect(new Point(0, 0), visual.DesiredSize));
         visual.UpdateLayout();
+
+        if (visual.DesiredSize.Height <= height || IsLikelyRollPrinter(dialog))
+        {
+            dialog.PrintVisual(visual, description);
+            return;
+        }
+
+        if (visual is TextBlock textBlock)
+        {
+            PrintTextBlockDocument(dialog, textBlock, description, width, height);
+            return;
+        }
+
+        if (visual is Border { Child: TextBlock borderedText })
+        {
+            PrintTextBlockDocument(dialog, borderedText, description, width, height);
+            return;
+        }
+
+        if (visual is Border { Child: StackPanel borderedStack })
+        {
+            PrintStackPanelDocument(dialog, borderedStack, description, width, height);
+            return;
+        }
+
+        if (visual is StackPanel stackPanel)
+        {
+            PrintStackPanelDocument(dialog, stackPanel, description, width, height);
+            return;
+        }
+
         dialog.PrintVisual(visual, description);
+    }
+
+    private static void PrintTextBlockDocument(PrintDialog dialog, TextBlock source, string description, double width, double height)
+    {
+        var document = new FlowDocument
+        {
+            PageWidth = width,
+            PageHeight = height,
+            PagePadding = source.Padding,
+            FontFamily = source.FontFamily,
+            FontSize = source.FontSize,
+            FontWeight = source.FontWeight,
+            TextAlignment = source.TextAlignment,
+            ColumnWidth = width
+        };
+        document.Blocks.Add(new Paragraph(new Run(source.Text))
+        {
+            Margin = source.Margin
+        });
+        dialog.PrintDocument(((IDocumentPaginatorSource)document).DocumentPaginator, description);
+    }
+
+    private static void PrintStackPanelDocument(PrintDialog dialog, StackPanel source, string description, double width, double height)
+    {
+        var document = new FixedDocument();
+        document.DocumentPaginator.PageSize = new Size(width, height);
+        var pageNumber = 0;
+        var current = NewPrintPage(width, source.Background);
+        var currentHeight = 0.0;
+
+        while (source.Children.Count > 0)
+        {
+            var child = source.Children[0];
+            source.Children.RemoveAt(0);
+            MeasureElement(child, width);
+            var childHeight = Math.Max(1, child.DesiredSize.Height);
+
+            if (current.Children.Count > 0 && currentHeight + childHeight > height)
+            {
+                AddPage(document, current, width, height, ++pageNumber);
+                current = NewPrintPage(width, source.Background);
+                currentHeight = 0;
+            }
+
+            current.Children.Add(child);
+            currentHeight += childHeight;
+        }
+
+        if (current.Children.Count > 0)
+        {
+            AddPage(document, current, width, height, ++pageNumber);
+        }
+
+        dialog.PrintDocument(document.DocumentPaginator, description);
+    }
+
+    private static StackPanel NewPrintPage(double width, Brush background) => new()
+    {
+        Width = width,
+        Background = background ?? Brushes.White
+    };
+
+    private static void AddPage(FixedDocument document, StackPanel content, double width, double height, int pageNumber)
+    {
+        content.Measure(new Size(width, height));
+        content.Arrange(new Rect(new Point(0, 0), new Size(width, Math.Min(height, content.DesiredSize.Height))));
+        content.UpdateLayout();
+
+        var page = new FixedPage
+        {
+            Width = width,
+            Height = height,
+            Background = Brushes.White
+        };
+        page.Children.Add(content);
+        var pageContent = new PageContent();
+        ((IAddChild)pageContent).AddChild(page);
+        document.Pages.Add(pageContent);
+    }
+
+    private static void MeasureElement(UIElement element, double width)
+    {
+        element.Measure(new Size(width, double.PositiveInfinity));
+        element.Arrange(new Rect(new Point(0, 0), element.DesiredSize));
+        element.UpdateLayout();
+    }
+
+    private static bool IsLikelyRollPrinter(PrintDialog dialog)
+    {
+        var name = dialog.PrintQueue?.FullName ?? "";
+        return dialog.PrintableAreaHeight > 1600 ||
+               name.Contains("thermal", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("receipt", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("pos", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("label", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("zebra", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("bixolon", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("star", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("epson", StringComparison.OrdinalIgnoreCase);
     }
 
     private static Button Button(string label, string color, double width = 82) => new()

@@ -6,11 +6,15 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>false</ImplicitUsings>
+    <ApplicationIcon>DoctorLogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="QRCoder" Version="1.8.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-settings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+    <None Include="master-template-settings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+    <None Include="Doctor Logo.png" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+    <None Include="DoctorLogo.ico" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
   </ItemGroup>
 </Project>
